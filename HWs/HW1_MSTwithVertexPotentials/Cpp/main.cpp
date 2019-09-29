@@ -43,17 +43,15 @@ public:
 class Graph {
 public:
     uint64_t vertices;
-    uint64_t edges;
     std::vector<std::list<std::pair<uint64_t, uint32_t>>> adjacency_list; //pair (node's linear index, cost)
 
-    Graph(uint64_t vertices) : vertices(vertices), edges(0) {
+    explicit Graph(uint64_t vertices) : vertices(vertices) {
         adjacency_list.resize(vertices);
     }
 
     Graph(Graph&& other) = default;
 
     void add_edge(uint64_t from, uint64_t to, uint32_t cost) {
-        ++edges;
         adjacency_list[from].emplace_back(to, cost);
     }
 
@@ -69,6 +67,21 @@ Graph findPotentialsCreateGraph(VertexGrid &grid, std::vector<uint64_t>& sortedV
     std::queue<uint64_t> queue;
     std::vector<bool> computed(grid.rows * grid.columns, false);
     Graph graph(grid.rows * grid.columns);
+    auto processNeighbor = [&](VertexCosts& current, uint64_t currentCoords, uint64_t neighborCoords) {
+        if (!computed[neighborCoords]) {
+            grid.costGrid[neighborCoords] = {current.edge_distance_to_potential+1, current.potential};
+            queue.push(neighborCoords);
+            computed[neighborCoords] = true;
+        }
+
+        VertexCosts neighbor = grid.costGrid[neighborCoords];
+        uint32_t edge_cost = getEdgeCost(current.edge_distance_to_potential,
+                                         neighbor.edge_distance_to_potential,
+                                         current.potential,
+                                         neighbor.potential);
+        graph.add_edge(currentCoords, neighborCoords, edge_cost);
+    };
+
     for(uint64_t& vertex: sortedVectorsWithPotential) {
         computed[vertex] = true;
         queue.push(vertex);
@@ -82,70 +95,16 @@ Graph findPotentialsCreateGraph(VertexGrid &grid, std::vector<uint64_t>& sortedV
 
         VertexCosts current = grid.costGrid[currentCoords];
 
-//        std::vector<std::pair<int64_t, int64_t>> neighborsCoords;
-//        std::transform(offsets.begin(), offsets.end(), std::back_inserter(neighborsCoords),
-//                [&](std::pair<int8_t, int8_t> offset) { return std::make_pair(row+offset.first, col+offset.second);});
-//
-//        auto end = std::remove_if(neighborsCoords.begin(), neighborsCoords.end(),
-//                [&](std::pair<int64_t, int64_t> neighbor) {
-//                        return (neighbor.first < 0) || (neighbor.first >= grid.rows) || (neighbor.second < 0) || (neighbor.second >= grid.columns);
-//                });
-//
-//        std::vector<uint64_t> neighbors;
-//        std::transform(neighborsCoords.begin(), end, std::back_inserter(neighbors), [&](std::pair<int64_t, int64_t> neighbor){ return grid.getIdx((uint32_t) neighbor.first, (uint32_t) neighbor.second);});
-//        if (grid.additionalEdges.find(currentCoords) != grid.additionalEdges.end()) {
-//            neighbors.push_back(grid.additionalEdges[currentCoords]);
-//        }
-//
-//        for (uint64_t neighborCoords: neighbors) {
-//            if (!computed[neighborCoords]) {
-//                grid.costGrid[neighborCoords] = {current.edge_distance_to_potential+1, current.potential};
-//                queue.push(neighborCoords);
-//                computed[neighborCoords] = true;
-//            }
-//
-//            VertexCosts neighbor = grid.costGrid[neighborCoords];
-//            uint32_t edge_cost = getEdgeCost(current.edge_distance_to_potential,
-//                                             neighbor.edge_distance_to_potential,
-//                                             current.potential,
-//                                             neighbor.potential);
-//            graph.add_edge(currentCoords, neighborCoords, edge_cost);
-//        }
-
         for (auto& offset: offsets) {
             int64_t nRow = row + offset.first;
             int64_t nCol = col + offset.second;
             if ( (nRow >= 0) && (nRow < grid.rows) && (nCol >= 0) && (nCol < grid.columns) ) {
-                uint64_t neighborCoords = grid.getIdx((uint32_t) nRow, (uint32_t) nCol);
-                if (!computed[neighborCoords]) {
-                    grid.costGrid[neighborCoords] = {current.edge_distance_to_potential+1, current.potential};
-                    queue.push(neighborCoords);
-                    computed[neighborCoords] = true;
-                }
-
-                VertexCosts neighbor = grid.costGrid[neighborCoords];
-                uint32_t edge_cost = getEdgeCost(current.edge_distance_to_potential,
-                        neighbor.edge_distance_to_potential,
-                        current.potential,
-                        neighbor.potential);
-                graph.add_edge(currentCoords, neighborCoords, edge_cost);
+                processNeighbor(current, currentCoords, grid.getIdx((uint32_t) nRow, (uint32_t) nCol));
             }
         }
 
         if (grid.additionalEdges.find(currentCoords) != grid.additionalEdges.end()) {
-            uint64_t additionalNeighborCoords = grid.additionalEdges[currentCoords];
-            if (!computed[additionalNeighborCoords]) {
-                grid.costGrid[additionalNeighborCoords] = {current.edge_distance_to_potential+1, current.potential};
-                queue.push(additionalNeighborCoords);
-                computed[additionalNeighborCoords] = true;
-            }
-
-            VertexCosts neighbor = grid.costGrid[additionalNeighborCoords];
-            uint32_t edge_cost = getEdgeCost(current.edge_distance_to_potential,
-                                             neighbor.edge_distance_to_potential,
-                                             current.potential,
-                                             neighbor.potential);
-            graph.add_edge(currentCoords, additionalNeighborCoords, edge_cost);
+            processNeighbor(current, currentCoords, grid.additionalEdges[currentCoords]);
         }
     }
 
