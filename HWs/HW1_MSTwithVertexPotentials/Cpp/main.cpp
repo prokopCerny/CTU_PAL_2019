@@ -8,17 +8,6 @@
 #include <queue>
 #include <cstdlib>
 
-uint64_t combineCoordinates(uint32_t row, uint32_t column) {
-    return ((uint64_t) row) << 32u | column;
-}
-
-uint32_t getRow(uint64_t combined) {
-    return (uint32_t) ((combined & 0xFFFFFFFF00000000) >> 32u);
-}
-
-uint32_t getCol(uint64_t combined) {
-    return (uint32_t) (combined & 0x00000000FFFFFFFF);
-}
 
 struct VertexCosts {
     uint32_t edge_distance_to_potential;
@@ -92,6 +81,36 @@ Graph findPotentialsCreateGraph(VertexGrid &grid, std::vector<uint64_t>& sortedV
         int64_t col = grid.getCol(currentCoords);
 
         VertexCosts current = grid.costGrid[currentCoords];
+
+//        std::vector<std::pair<int64_t, int64_t>> neighborsCoords;
+//        std::transform(offsets.begin(), offsets.end(), std::back_inserter(neighborsCoords),
+//                [&](std::pair<int8_t, int8_t> offset) { return std::make_pair(row+offset.first, col+offset.second);});
+//
+//        auto end = std::remove_if(neighborsCoords.begin(), neighborsCoords.end(),
+//                [&](std::pair<int64_t, int64_t> neighbor) {
+//                        return (neighbor.first < 0) || (neighbor.first >= grid.rows) || (neighbor.second < 0) || (neighbor.second >= grid.columns);
+//                });
+//
+//        std::vector<uint64_t> neighbors;
+//        std::transform(neighborsCoords.begin(), end, std::back_inserter(neighbors), [&](std::pair<int64_t, int64_t> neighbor){ return grid.getIdx((uint32_t) neighbor.first, (uint32_t) neighbor.second);});
+//        if (grid.additionalEdges.find(currentCoords) != grid.additionalEdges.end()) {
+//            neighbors.push_back(grid.additionalEdges[currentCoords]);
+//        }
+//
+//        for (uint64_t neighborCoords: neighbors) {
+//            if (!computed[neighborCoords]) {
+//                grid.costGrid[neighborCoords] = {current.edge_distance_to_potential+1, current.potential};
+//                queue.push(neighborCoords);
+//                computed[neighborCoords] = true;
+//            }
+//
+//            VertexCosts neighbor = grid.costGrid[neighborCoords];
+//            uint32_t edge_cost = getEdgeCost(current.edge_distance_to_potential,
+//                                             neighbor.edge_distance_to_potential,
+//                                             current.potential,
+//                                             neighbor.potential);
+//            graph.add_edge(currentCoords, neighborCoords, edge_cost);
+//        }
 
         for (auto& offset: offsets) {
             int64_t nRow = row + offset.first;
@@ -186,10 +205,6 @@ int main() {
         verticesWithPotential.emplace_back(potential, grid.getIdx(row, col));
     }
 
-    std::sort(verticesWithPotential.begin(), verticesWithPotential.end());
-    std::vector<uint64_t> sortedVerticesPotential;
-    std::transform(verticesWithPotential.begin(), verticesWithPotential.end(), std::back_inserter(sortedVerticesPotential), [](std::pair<uint32_t, uint64_t>& el) {return el.second;});
-
     for (size_t i=0; i < addedEdges; ++i) {
         uint32_t fRow{}, fCol{}, tRow{}, tCol{};
         std::cin >> fRow >> fCol >> tRow >> tCol;
@@ -198,35 +213,12 @@ int main() {
         grid.additionalEdges[fromPos] = toPos;
         grid.additionalEdges[toPos] = fromPos;
     }
-//    std::cout<< "loaded" <<std::endl;
-//
-//    for (size_t i = 0; i < rows; ++i) {
-//        for (size_t j = 0; j < cols; ++j) {
-//            VertexCosts cur = grid.costGrid[grid.getIdx(i, j)];
-//            std::cout << "(" << cur.edge_distance_to_potential << ", " << cur.potential << ") ";
-//        }
-//        std::cout << std::endl;
-//    }
-//
-//    for (auto& fromTo: grid.additionalEdges) {
-//        uint64_t from = fromTo.first;
-//        uint64_t to = fromTo.second;
-//        std::cout << "(" << grid.getRow(from)+1 << ", " << grid.getCol(from)+1 << ") -> (" << grid.getRow(to)+1 << ", " << grid.getCol(to)+1 << ")" <<std::endl;
-//    }
-//
-//    for (auto& potential: verticesWithPotential) {
-//        std::cout << potential.first << ", ";
-//    }
-//    std::cout << std::endl;
-    Graph graph = findPotentialsCreateGraph(grid, sortedVerticesPotential);
-//    for (size_t i = 0; i < rows; ++i) {
-//        for (size_t j = 0; j < cols; ++j) {
-//            VertexCosts cur = grid.costGrid[grid.getIdx(i, j)];
-//            std::cout << "(" << cur.edge_distance_to_potential << ", " << cur.potential << ") ";
-//        }
-//        std::cout << std::endl;
-//    }
-//    std::cout << graph.edges/2 << std::endl;
-    std::cout << primMSTcost(graph) << std::endl;
 
+    std::sort(verticesWithPotential.begin(), verticesWithPotential.end());
+    std::vector<uint64_t> sortedVerticesPotential;
+    std::transform(verticesWithPotential.begin(), verticesWithPotential.end(), std::back_inserter(sortedVerticesPotential), [](std::pair<uint32_t, uint64_t>& el) {return el.second;});
+
+    Graph graph = findPotentialsCreateGraph(grid, sortedVerticesPotential);
+
+    std::cout << primMSTcost(graph) << std::endl;
 }
