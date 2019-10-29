@@ -62,12 +62,12 @@ uint32_t getEdgeCost(uint32_t d1, uint32_t d2, uint32_t pot1, uint32_t pot2) {
     return d1 + d2 + (uint32_t) std::abs(potDiff);
 }
 
-Graph findPotentialsCreateGraph(VertexGrid &grid, std::vector<uint64_t>& sortedVectorsWithPotential) {
+Graph findPotentialsCreateGraph(VertexGrid& grid, const std::vector<uint64_t>& sortedVerticesWithPotential) {
     std::array<std::pair<int8_t, int8_t>, 4> offsets = {{{-1, 0}, {0, -1}, {0, 1}, {1, 0}}};
     std::queue<uint64_t> queue;
     std::vector<bool> computed(grid.rows * grid.columns, false);
     Graph graph(grid.rows * grid.columns);
-    auto processNeighbor = [&](VertexCosts& current, uint64_t currentCoords, uint64_t neighborCoords) {
+    auto processNeighbor = [&](const VertexCosts& current, uint64_t currentCoords, uint64_t neighborCoords) {
         if (!computed[neighborCoords]) {
             grid.costGrid[neighborCoords] = {current.edge_distance_to_potential+1, current.potential};
             queue.push(neighborCoords);
@@ -82,7 +82,7 @@ Graph findPotentialsCreateGraph(VertexGrid &grid, std::vector<uint64_t>& sortedV
         graph.add_edge(currentCoords, neighborCoords, edge_cost);
     };
 
-    for(uint64_t& vertex: sortedVectorsWithPotential) {
+    for(uint64_t vertex: sortedVerticesWithPotential) {
         computed[vertex] = true;
         queue.push(vertex);
     }
