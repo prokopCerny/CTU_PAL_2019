@@ -101,7 +101,16 @@ tuple<uint32_t, vector<int32_t>, vector<uint32_t>> find_cycles(const Graph &grap
     return make_tuple(root, move(cycleMembership), move(cycleSizes));
 }
 
-string get_child_certificate(uint32_t vertex, const Graph &graph, const vector<int32_t> &cycleMembership, const vector<uint32_t> &cycleSizes, vector<bool> &visited) {
+/**
+ * Creates certificates for cycles using BFS traversal. Passes all public tests and 9/10 private tests
+ * @param vertex
+ * @param graph
+ * @param cycleMembership
+ * @param cycleSizes
+ * @param visited
+ * @return
+ */
+string get_child_certificate_cycle_bfs(uint32_t vertex, const Graph &graph, const vector<int32_t> &cycleMembership, const vector<uint32_t> &cycleSizes, vector<bool> &visited) {
     visited[vertex] = true;
     if (graph.adjacency_list[vertex].size() == 1) {
         return "";
@@ -120,7 +129,7 @@ string get_child_certificate(uint32_t vertex, const Graph &graph, const vector<i
             for (uint32_t neigh: graph.adjacency_list[cur]) {
                 if (!visited[neigh]) {
                     if (cycleMembership[neigh] != cycleMembership[cur]) {
-                        string c = get_child_certificate(neigh, graph, cycleMembership, cycleSizes, visited);
+                        string c = get_child_certificate_cycle_bfs(neigh, graph, cycleMembership, cycleSizes, visited);
                         if (!c.empty()) {
                             cycleSubcertificates[depth].push_back(c);
                         }
@@ -152,12 +161,95 @@ string get_child_certificate(uint32_t vertex, const Graph &graph, const vector<i
     }
 }
 
+
+/**
+ * creates cycle certificates by walking the cycle in both directions and selecting the lexicographically smaller resulting certificate.
+ * Uses cache for speedup
+ * @param vertex
+ * @param graph
+ * @param cycleMembership
+ * @param cycleSizes
+ * @param visited
+ * @param cache
+ * @return
+ */
+string get_child_certificate_double_cycle_walk(uint32_t vertex, const Graph &graph, const vector<int32_t> &cycleMembership, const vector<uint32_t> &cycleSizes, vector<bool> &visited, unordered_map<uint32_t, string> &cache) {
+    visited[vertex] = true;
+    if (graph.adjacency_list[vertex].size() == 1) {
+        return "";
+    } else if (cache.find(vertex) != cache.end()) {
+        return cache[vertex];
+    } else {
+        vector<list<string>> cycleSubcertificates;
+        vector<uint32_t> cycleNeighs;
+        for (uint32_t n : graph.adjacency_list[vertex]) {
+            if (cycleMembership[n] == cycleMembership[vertex]) {
+                cycleNeighs.push_back(n);
+            }
+        }
+        list<string> possibleCertificates;
+        for (uint32_t dir: cycleNeighs) {
+            vector<bool> cycleVisited(graph.vertices, false);
+            cycleVisited[vertex] = true;
+            queue<pair<uint32_t, uint32_t>> queue;
+            queue.emplace(dir, 0);
+            stringstream curCert;
+            while (!queue.empty()) {
+                uint32_t cur;
+                uint32_t depth;
+                tie(cur, depth) = queue.front();
+                queue.pop();
+                cycleVisited[cur] = true;
+                for (uint32_t neigh: graph.adjacency_list[cur]) {
+                    if (!cycleVisited[neigh]) {
+                        if (cycleMembership[neigh] != cycleMembership[cur]) {
+                            string c = get_child_certificate_double_cycle_walk(neigh, graph, cycleMembership,
+                                                                               cycleSizes, visited, cache);
+                            if (!c.empty()) {
+                                curCert << "b" << c << "b";
+                            } else {
+                                curCert << "a";
+                            }
+                        } else {
+                            queue.emplace(neigh, depth+1);
+                            visited[neigh] = true;
+                        }
+                    }
+                }
+            }
+            possibleCertificates.push_back(curCert.str());
+        }
+
+        stringstream certificate;
+        certificate << cycleSizes[cycleMembership[vertex]] << "(";
+        possibleCertificates.sort();
+        certificate << possibleCertificates.front() << ")";
+        cache[vertex] = certificate.str();
+        return cache[vertex];
+
+    }
+}
+
+/**
+ * wrapper for using double cycle walk
+ * @param vertex
+ * @param graph
+ * @param cycleMembership
+ * @param cycleSizes
+ * @param visited
+ * @return
+ */
+string get_child_certificate2_cached(uint32_t vertex, const Graph &graph, const vector<int32_t> &cycleMembership, const vector<uint32_t> &cycleSizes, vector<bool> &visited) {
+    unordered_map<uint32_t, string> cache;
+    return get_child_certificate_double_cycle_walk(vertex, graph, cycleMembership, cycleSizes, visited, cache);
+}
+
 string create_graph_certificate(const Graph &graph, uint32_t root, const vector<int32_t> &cycleMembership, const vector<uint32_t> &cycleSizes) {
     list<string> childCertificates;
     vector<bool> visited(graph.vertices, false);
     visited[root] = true;
     for (uint32_t neigh : graph.adjacency_list[root]) {
-        childCertificates.push_back(get_child_certificate(neigh, graph, cycleMembership, cycleSizes, visited));
+        childCertificates.push_back(get_child_certificate2_cached(neigh, graph, cycleMembership, cycleSizes, visited));
     }
     childCertificates.sort();
     stringstream certificate;
