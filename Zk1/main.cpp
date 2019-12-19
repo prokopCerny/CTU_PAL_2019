@@ -56,7 +56,7 @@ void add_to_prefix_tree(string &prefix, uint32_t member) {
 }
 
 
-uint64_t get_prefix_counts_of_length_k(Node *root, uint64_t cur_depth, uint64_t k, uint64_t alphabet_size, uint64_t committee_approval_count, uint64_t needed_count) {
+uint64_t get_prefix_counts_of_length_k(Node *root, uint64_t cur_depth, uint64_t k, uint64_t alphabet_size, uint64_t committee_approval_count) {
     size_t final_size_to_here = root->final_to_here.size();
     if (final_size_to_here >= committee_approval_count) {
         uint64_t cnt = 1;
@@ -71,9 +71,9 @@ uint64_t get_prefix_counts_of_length_k(Node *root, uint64_t cur_depth, uint64_t 
         uint64_t cnt = 0;
         for (auto char_node_ptr_pair : root->children) {
             Node* child = char_node_ptr_pair.second;
-//            cnt = (cnt + get_prefix_counts_of_length_k(child, cur_depth+1, k, alphabet_size, committee_approval_count, 7))%100000;
+//            cnt = (cnt + get_prefix_counts_of_length_k(child, cur_depth+1, k, alphabet_size, committee_approval_count))%100000;
             if (!root->final || child->committee_count >= committee_approval_count - final_size_to_here) {
-                cnt = (cnt + get_prefix_counts_of_length_k(child, cur_depth+1, k, alphabet_size, committee_approval_count, 7))%100000;
+                cnt = (cnt + get_prefix_counts_of_length_k(child, cur_depth+1, k, alphabet_size, committee_approval_count))%100000;
             }
         }
         return cnt;
@@ -107,7 +107,7 @@ int main() {
             }
         }
     }
-    cout << get_prefix_counts_of_length_k(tree, 0, prefix_length, alphabet.size(), min_approve_count, min_approve_count) << endl;
+    cout << get_prefix_counts_of_length_k(tree, 0, prefix_length, alphabet.size(), min_approve_count) << endl;
 
     return 0;
 }
