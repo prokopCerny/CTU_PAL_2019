@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> <html><!--
+ Page saved with SingleFile 
+ url: https://cw.felk.cvut.cz/courses/a4m33pal/task.php?task=committee 
+ saved date: Sat Jan 18 2020 11:52:12 GMT+0100 (Středoevropský standardní čas)
+--><meta charset=utf-8>
+<meta http-equiv=cache-control content=no-cache>
+<style>body{width:100%}pre{background-color:#ccc}p{text-align:justify}div.main{width:875px;margin-left:auto;margin-right:auto}</style>
+<title>Programming assignment A4M33PAL</title>
+<link type=image/x-icon rel="shortcut icon" href="data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAABoZ2cA+fn5AOrq6gArKysA29vbAHV0dADo6OgA6ejoANnZ2QC7u7sArKysAJ2dnQB/f38Aubm5APPz8wCMjIwA5OTkAG5ubgDGxsYAt7e3AEJBQQCKiooA4uLiACMjIwDExMQA/v7+AO/v7wAiISEAXFtbAE1MTACWlZUALy4uAGhoaADAwMAAaWhoALGxsQDr6+sAhISEANzc3AAeHR0Azc3NAGZmZgBISEgAoKCgAPj4+ACRkZEA6enpANra2gDLy8sAvLy8AFZVVQA3NzcAODc3AI+PjwDn5+cA2NjYAMnJyQALCgoAurq6ADY1NQDl5eUA1tbWALi4uABDQkIA4+PjACUkJADU1NQAxcXFAP///wDw8PAA4eHhAHp6egB7enoA0tLSANPS0gDEw8MAh4eHAHh4eACysrIATEtLAJSUlADd3d0Ad3Z2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACVFRUVFRUUZAUVFARlFRISZEREREREQWMEREQgREREY3RERERERETD9ERB1IRERRN0RERERERE8zRgYbKQFEUTdERERERBAfIysVAB5LRFE3REREREQLFBlSJzhDDERRN0REREQBOxEZBTkONjQGFjdEREQBKCVOLBINDiYPSUA3RDwgHEc1CERERERERERRURoXIiQZRRpEREREREREUS4tQURERERERERERERERFECTTJERERERERERERERERRQBgDRUREEEpEREREREREUTdEUCI+TioKRERERERERFEmREQHGDE6PUREREREREQWEzc3URZAFi83Nzc3Nzc3CQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="></head>
+<body>
+ <div class=main>
+<h2><font color=blue>Basic Committee Work Model</font></h2>
+<p align=justify>
+A committee is an assembly of some number of members whose job is to evaluate proposals and subsequently accept or reject them.
+A proposal is an unempty string over a finite alphabet A. The alphabet is the same for all proposals.<br>
+Each committee member is equipped with his/her own so called evaluation list of strings over A.
+A proposal is accepted by a committe member if and only if some unempty prefix of the proposal is equal to some
+string in the evaluation list of that committe member. <br>
+Let N be the number of committee members and let D be a fixed integer with the property 1 ≤ D ≤ N.
+Any proposal is evaluated by each committee member and it is <b>accepted by the committee</b>
+if and only if at least D committee members accept it.
+<h3><font color=blue>The task</font></h3>
+<p align=justify>
+You are given the the alphabet A of the proposals, the value of D, a positive integer K
+and the evaluation lists of all committee members. <br>
+Determine the number of all possible proposals of length K which are accepted by the committee.
+</p>
+ <hr>
+<h3><font color=blue>Input</font></h3>
+<p align=justify>
+The input contains several text lines. The first line contains unempty string SA followed by space and three integers N, D, K separated by spaces.
+The string SA represents the alphabet A, it consists of lowercase letters, no letter is repeated in SA. 
+N is the number of committee members, D is minimum number of committee members which must accept a proposal in order
+for that proposal to be accepted by the committee, K is a positive integer.<br>
+Next, there are N evaluation lists belonging to respective commitee members.
+Each list starts with a line containing single positive integer representing the length of that list.
+Next, there is the same number of lines, each contains one unempty string over A. Note that strings may be repeated in the list.<br>
+It holds that 2 ≤ |SA| ≤ 26, 1 ≤ D ≤ N ≤ 10<sup>5</sup>, 1 ≤ K ≤ 100000.
+No list element is longer than 100000 characters.<br>
+The total nuber of characters in all evaluation lists taken together does not exceed 2×10<sup>7</sup>.
+</p>
+<h3><font color=blue>Output</font></h3>
+<p align=justify>
+The output contains one text line with one integer representing the number of all possible proposals of length
+K which are accepted by the committee. The number is printed modulo 100000.
+</p>
+<h3><font color=blue>Example 1</font></h3>
+<b>Input</b><br>
+<pre>abcd 3 2 5
+2
+abcd
+dcba
+3
+abc
+abc
+dcba
+4
+abcd
+abc
+abcd
+aba
+</pre>
+<b>Output</b><br>
+<pre>20
+</pre>
+All proposals accepted by the committee in Example 1 are:
+<pre>abcaa  abcba  abcca  abcda  dcbaa
+abcab  abcbb  abccb  abcdb  dcbab
+abcac  abcbc  abccc  abcdc  dcbac
+abcad  abcbd  abccd  abcdd  dcbad
+</pre>
+<h3><font color=blue>Example 2</font></h3>
+<b>Input</b><br>
+<pre>uvwxyz 2 2 4
+2
+uv
+wxyz
+2
+vu
+zwyx
+</pre>
+<b>Output</b><br>
+<pre>0
+</pre>
+There can be no proposal accepted by the committee in Example 2.
+<h3><font color=blue>Example 3</font></h3>
+<b>Input</b><br>
+<pre>klmnoprstu 2 1 111
+1
+tt
+2
+kk
+ms
+</pre>
+<b>Output</b><br>
+<pre>0
+</pre>
+There are 3×10<sup>109</sup> proposals of length 111 accepted by the committee in Example 3.
+<h3><font color=blue>Example 4</font></h3>
+<b>Input</b><br>
+<pre>abcde 5 1 15
+1
+a
+2
+ba
+bbb
+3
+caaa
+cbbbb
+cccccc
+4
+daaaaaa
+dbbbbbbb
+dcccccccc
+dddddddddd
+5
+eaaaaaaaaaa
+ebbbbbbbbbbb
+ecccccccccccc
+eddddddddddddd
+eeeeeeeeeeeeeee
+</pre>
+<b>Output</b><br>
+<pre>94531
+</pre>
+There are ¼&nbsp;×&nbsp;(5<sup>15</sup> −1) = 7629394531 proposals of length 15 accepted by the committee in Example 4.
+<hr>
+<h3><font color=blue>Public data</font></h3>
+<p align=justify>
+The public data set is intended for easier debugging and approximate program correctness checking. The public data set is stored also in the upload system and each time a student submits a solution it is run on the public dataset and the program output to stdout and stderr is available to him/her.
+<br>
+<a href="https://cw.felk.cvut.cz/courses/a4m33pal/getdata.php?task=committee&amp;item=datapub.zip"><b>Link to public data set</b></a>
+</p>
+</div>

@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> <html style><!--
+ Page saved with SingleFile 
+ url: https://cw.felk.cvut.cz/brute/data/ae/release/2019z_b4m33pal/pal2019/evaluation/input.php?task=geneng 
+ saved date: Sat Jan 18 2020 11:46:43 GMT+0100 (Středoevropský standardní čas)
+--><meta charset=utf-8>
+<meta http-equiv=cache-control content=no-cache>
+<title>Problem Assignment BM33PAL</title>
+<link type=image/x-icon rel="shortcut icon" href="data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAABoZ2cA+fn5AOrq6gArKysA29vbAHV0dADo6OgA6ejoANnZ2QC7u7sArKysAJ2dnQB/f38Aubm5APPz8wCMjIwA5OTkAG5ubgDGxsYAt7e3AEJBQQCKiooA4uLiACMjIwDExMQA/v7+AO/v7wAiISEAXFtbAE1MTACWlZUALy4uAGhoaADAwMAAaWhoALGxsQDr6+sAhISEANzc3AAeHR0Azc3NAGZmZgBISEgAoKCgAPj4+ACRkZEA6enpANra2gDLy8sAvLy8AFZVVQA3NzcAODc3AI+PjwDn5+cA2NjYAMnJyQALCgoAurq6ADY1NQDl5eUA1tbWALi4uABDQkIA4+PjACUkJADU1NQAxcXFAP///wDw8PAA4eHhAHp6egB7enoA0tLSANPS0gDEw8MAh4eHAHh4eACysrIATEtLAJSUlADd3d0Ad3Z2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACVFRUVFRUUZAUVFARlFRISZEREREREQWMEREQgREREY3RERERERETD9ERB1IRERRN0RERERERE8zRgYbKQFEUTdERERERBAfIysVAB5LRFE3REREREQLFBlSJzhDDERRN0REREQBOxEZBTkONjQGFjdEREQBKCVOLBINDiYPSUA3RDwgHEc1CERERERERERRURoXIiQZRRpEREREREREUS4tQURERERERERERERERFECTTJERERERERERERERERRQBgDRUREEEpEREREREREUTdEUCI+TioKRERERERERFEmREQHGDE6PUREREREREQWEzc3URZAFi83Nzc3Nzc3CQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="></head>
+<body>
+ <div class=main>
+<h2><font color=blue>Genetic engineering</font></h2>
+A group of scientists tests a new method for creating DNA sequences. The method allows to take basic units, which are a collection of simple DNAs, to modify each of the units
+by deleting selected nucleotides, and to concatenate the resulting sequences into one DNA sequence.
+For example, let the basic units be of three types, ACC, AGCTA and CCGGTT. Then, DNA sequence ACACAGCAGCCGT can be created from two basic units of the first type,
+two basic units of the second type and one basic unit of the third type as 
+<div contenteditable>
+AC<span style=color:red;background-color:white>C</span> AC<span style=color:red;background-color:white>C</span> AGC<span style=color:red;background-color:white>T</span>A <span style=color:red;background-color:white>A</span>G<span style=color:red;background-color:white>CTA</span> CC<span style=color:red;background-color:white>G</span>G<span style=color:red;background-color:white>T</span>T
+</div>
+where the nucleotides to be deleted are printed in red. Note that each basic unit has its left-to-right order of nucleotides which must be preserved in the created DNA. This means that the leftmost nucleotide of a basic unit can be connected only to the rightmost nucleotide of another unit. It also does not suffice to produce a DNA sequence which (when scanned in the left-to-right order) is the mirror of the sequence to be created.
+<br>
+Each basic unit has to be prepared in advance and has a manufacturing cost represented by a positive integer. In addition, each deletion of a nucleotide increases the cost by 1. The manufacturing cost of using several modified basic units is determined as the sum of their costs (note that concatenations of the units do not increase the cost).
+For example, let the manufacturing cost of ACC, AGCTA and CCGGTT be 2, 3 and 4, respectively. Then the cost of creating ACACAGCAGCCGT as described above is (2+1)+(2+1)+(3+1)+(3+4)+(4+2) = 23.
+<br>
+Nucleotides deletions have an impact on the stability of basic units. For this reason, there is a limit on the number of deletions that can be performed in a basic
+unit (this limit is the same for basic units of all types). In the example above, we assume that the maximum number of deletions allowed per a basic unit is at least&nbsp;4.
+<h3><font color=blue>The task</font></h3>
+<p align=justify>
+Let Σ = {A, G, C, T} be the alphabet of nucleotides.
+Given a DNA sequence represented by a non-empty string <i>T</i> over Σ,
+types of available basic units represented by a set of non-empty strings {<i>S</i><sub>1</sub>, ..., <i>S</i><sub><i>k</i></sub>},
+where each <i>S</i><sub><i>i</i></sub>&nbsp;∈&nbsp;Σ<sup>+</sup> is of a manufacturing cost <i>c</i><sub><i>i</i></sub>, and a limit <i>D</i><sub>max</sub> on the number of deletions
+that can be performed over any of the basic units, find a manufacturing plan how to produce <i>T</i> so that the manufacturing cost is the minimum possible.
+Since the scientists also intend to minimize the number of used basic units, among all the cost-minimum manufacturing plans, find a plan
+which requires the minimum possible number of used basic units. Note that the number of used basic units is the number of concatenated DNA pieces, not the number of
+types used in the production. Also note that any amount of basic units of any type is available.
+</p>
+<hr>
+<h3><font color=blue>Input</font></h3>
+<p align=justify>
+The first input line contains a non-empty string <i>T</i> over Σ, which represents a DNA sequence to be created.
+The second line contains integers <i>N</i> and <i>D</i><sub>max</sub> separated by space. <i>N</i> is the number of basic unit types, <i>D</i><sub>max</sub> is
+the maximum number of nucleotide deletions that can be performed per basic unit. Next, there are 2<i>N</i> input lines. Each odd line contains a positive
+integer. This is the manufacturing cost of each basic unit of type represented by a non-empty string over Σ located on the line following after the line with the cost.
+<br>
+It holds 1 ≤ |<i>T</i>| ≤ 20000, 1 ≤ <i>N</i> ≤ 80 and 1 ≤ <i>D</i><sub>max</sub> ≤ 40. Each basic unit type is of length at most 100 and of cost at most 500.
+<h3><font color=blue>Output</font></h3>
+<p align=justify>
+The output consists of one line which contains two integers, <i>P</i> and <i>U</i>, separated by space. The first integer is the minimum manufacturing
+cost of <i>T</i>, the second integer is the minimum number of basic units needed to produce <i>T</i> with manufacturing cost <i>P</i>. 
+It is a guaranteed that a feasible solution always exists.
+<br>
+</p>
+<h3><font color=blue>Example 1</font></h3>
+<b>Input</b><br>
+<pre>ACACAGCAGCCGT
+3 4
+2
+ACC
+3
+AGCTA
+4
+CCGGTT
+</pre>
+<b>Output</b><br>
+<pre>23 5
+</pre>
+<h3><font color=blue>Example 2</font></h3>
+<b>Input</b><br>
+<pre>CACCATCACCATACCCTT
+4 1
+10
+CACCCTT
+10
+CGTAGTG
+14
+CACCCAT
+20
+CACACAT
+</pre>
+<b>Output</b><br>
+<pre>41 3
+</pre>
+<div contenteditable>
+An optimal solution is: CAC<span style=color:red;background-color:white>C</span>CAT CAC<span style=color:red;background-color:white>C</span>CAT <span style=color:red;background-color:white>C</span>ACCCTT
+</div>
+<h3><font color=blue>Example 3</font></h3>
+<b>Input</b><br>
+<pre>CCGTCTTCCCTTGAACTCCGTCCCCCG
+6 2
+2
+TTC
+5
+CCCG
+6
+GAAT
+14
+GAAC
+4
+CCT
+3
+CGT
+</pre>
+<b>Output</b><br>
+<pre>46 11
+</pre>
+<div contenteditable>
+An optimal solution is: CC<span style=color:red;background-color:white>C</span>G T<span style=color:red;background-color:white>T</span>C TTC CC<span style=color:red;background-color:white>T</span> TT<span style=color:red;background-color:white>C</span> GAA<span style=color:red;background-color:white>T</span> <span style=color:red;background-color:white>TT</span>C <span style=color:red;background-color:white>T</span>TC CGT CC<span style=color:red;background-color:white>T</span> CCCG
+</div>
+<hr>
+<h3><font color=blue>Public data</font></h3>
+<p align=justify>
+The public data set is intended for easier debugging and approximate program correctness checking. The public data set is stored also in the upload system and each time a student submits a solution it is run on the public dataset and the program output to stdout and stderr is available to him/her.
+<br>
+<a href="https://cw.felk.cvut.cz/brute/data/ae/release/2019z_b4m33pal/pal2019/evaluation/getdata.php?task=geneng&amp;item=datapub.zip"><b>Link to public data set</b></a>
+</p>
+</div>
